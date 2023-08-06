@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Seat Reservation</title>
+<script>
+function seat_reservation(num_seats) {
+  // Initialize the seat map.
+  var seat_map = [false] * 80;
+
+  // Reserve the seats.
+  for (var i = 0; i < num_seats; i++) {
+    // Try to reserve the seats in one row.
+    var row = i // 7;
+    if (!seat_map[row * 7 + i % 7]) {
+      seat_map[row * 7 + i % 7] = true;
+      break;
+    } else {
+      // If the seats are not available in one row, then book the nearby seats.
+      for (var j = i - 1; j >= 0; j--) {
+        if (!seat_map[j]) {
+          seat_map[j] = true;
+          break;
+        }
+      }
+    }
+  }
+
+  // Return the list of the reserved seat numbers.
+  var reserved_seats = [];
+  for (var i = 0; i < 80; i++) {
+    if (seat_map[i]) {
+      reserved_seats.push(i + 1);
+    }
+  }
+
+  return reserved_seats;
+}
+
+function show_seats() {
+  var seats = seat_reservation(document.getElementById("num_seats").value);
+  var seat_html = "";
+  for (var i = 0; i < 80; i++) {
+    if (seats.indexOf(i + 1) >= 0) {
+      seat_html += "<span class='reserved'>" + (i + 1) + "</span>";
+    } else {
+      seat_html += "<span class='available'>" + (i + 1) + "</span>";
+    }
+  }
+  document.getElementById("seats").innerHTML = seat_html;
+}
+</script>
+</head>
+<body>
+<h1>Seat Reservation</h1>
+<p>Enter the number of seats to be reserved:</p>
+<input type="number" id="num_seats" value="1">
+<button onclick="show_seats()">Show Seats</button>
+<div id="seats"></div>
+</body>
+</html>
